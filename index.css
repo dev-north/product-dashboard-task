@@ -1,6 +1,6 @@
 header{
     margin: 2rem;
-    background-color: rgb(103, 103, 103);
+    background-color: rgb(244, 230, 142);
     color: white;
 }
 body{
@@ -9,4 +9,5 @@ body{
 
 #main{
     border: 2px solid rgb(62, 62, 62);
+    
 }
