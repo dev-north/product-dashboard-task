@@ -23,10 +23,10 @@ document.addEventListener("DOMContentLoaded",updateProductsList);
 
 
 async function storeDetails(e){
+    try {
     e.preventDefault();
     let name = document.getElementById("p_name");
     let price = document.getElementById("p_price");
-    try {
         await axiosI.post("/products",{
             p_name: name.value,
             p_price: price.value
@@ -38,9 +38,9 @@ async function storeDetails(e){
 }
 
 async function updateProductsList(){
+    try{
     products.innerHTML = "";
     total.innerHTML = "";
-    try{
     const productList = await axiosI.get("/products")
         let tempHTML = "";
         let totalprice = 0;
@@ -65,9 +65,9 @@ async function updateProductsList(){
 
 async function productAction(e) {
     if (e.target.classList.contains("delete")){
+        try {
         let selectedProduct = e.target.parentElement.parentElement;
         let target = "/products/"+selectedProduct.id;
-        try {
             await axiosI.delete(target)
         } catch (error) {
             console.error(eroor);
