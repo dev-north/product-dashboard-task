@@ -1,5 +1,5 @@
 const axiosI = axios.create({
-    baseURL: "https://crudcrud.com/api/c1823653118144a19859112bea606dab"
+    baseURL: "https://crudcrud.com/api/22b4b83b539d4bb49ba0c6df1e83506a"
   });
 
 
@@ -13,28 +13,35 @@ axiosI.interceptors.request.use(config=>{
 
 let form = document.getElementById("product-details");
 let products = document.getElementById("products");
-let btndelete ="<button class='btn btn-danger btn-sm float-right delete'>DeleteProdcut</button>"
+let btndelete ="<button class='btn btn-danger btn-sm float-right delete'>Delete Prodcut</button>"
 let total = document.getElementById("total_amt");
+
+let btndelteNode = document.createElement("button");
+btndelteNode.classList = "btn btn-danger btn-sm float-right delete";
+btndelteNode.appendChild(document.createTextNode("Delete Product"))
 
 form.addEventListener("submit",storeDetails);
 products.addEventListener("click",productAction);
 document.addEventListener("DOMContentLoaded",updateProductsList);
 
-
+var count =  0
 
 async function storeDetails(e){
     try {
     e.preventDefault();
     let name = document.getElementById("p_name");
     let price = document.getElementById("p_price");
-        await axiosI.post("/products",{
+        let res = await axiosI.post("/products",{
             p_name: name.value,
             p_price: price.value
-        })   
+        })
+        let row = makeNewRow(name.value , price.value , res.data._id);
+        products.appendChild(row);
+        count++;
     } catch (error) {
         console.error(error);
     }
-    updateProductsList();
+    
 }
 
 async function updateProductsList(){
@@ -53,7 +60,8 @@ async function updateProductsList(){
             <td>${product.p_price}</td>
             <td>${btndelete}</td>
             </tr>`
-            totalprice+=product.p_price;
+            totalprice+=parseInt(product.p_price);
+            count++;
         }
         products.innerHTML = tempHTML;
         total.innerHTML = totalprice
@@ -69,13 +77,33 @@ async function productAction(e) {
         let selectedProduct = e.target.parentElement.parentElement;
         let target = "/products/"+selectedProduct.id;
             await axiosI.delete(target)
-        } catch (error) {
-            console.error(eroor);
+            products.removeChild(selectedProduct);
+        } catch (error) {   
+            console.error(error);
             
         }
-        updateProductsList();
+        // updateProductsList();
     }
     
+}
+
+function makeNewRow(name , price , id){
+    let row = document.createElement("tr");
+    row.setAttribute("id",id);
+    
+    let th =document.createElement("th")
+    th.setAttribute("scope","row")
+    th.appendChild(document.createTextNode(`${count+1}`));
+    row.appendChild(th);
+    let nameNode = document.createElement("td");
+    nameNode.appendChild(document.createTextNode(`${name}`));
+    row.appendChild(nameNode);
+    let priceNode = document.createElement("td");
+    priceNode.appendChild(document.createTextNode(`${price}`));
+    row.appendChild(priceNode);
+    row.appendChild(document.createElement("td").appendChild(btndelteNode).cloneNode(true));
+    return row;
+
 }
 
 // function updateProductsListTest(){
